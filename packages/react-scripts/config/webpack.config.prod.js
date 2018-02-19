@@ -170,15 +170,36 @@ module.exports = {
           // Process JS with Babel.
           {
             test: /\.(js|jsx|mjs)$/,
-            include: paths.appSrc,
+            include: [
+              paths.appSrc,
+              /lumi-components/,
+              /react-native-/
+            ],
             loader: require.resolve('babel-loader'),
             options: {
               // @remove-on-eject-begin
               babelrc: false,
               presets: [require.resolve('babel-preset-react-app')],
+              plugins: [require.resolve('babel-plugin-react-native-web')],
               // @remove-on-eject-end
               compact: true,
             },
+          },
+          // Process PureScript.
+          {
+            test: /\.purs$/,
+            include: paths.appSrc,
+            loader: require.resolve('purs-loader'),
+            options: {
+              src: [
+                'bower_components/purescript-*/src/**/*.purs',
+                'src/**/*.purs'
+              ],
+              bundle: false,
+              psc: 'psa',
+              watch: false,
+              pscIde: false
+            }
           },
           // The notation here is somewhat confusing.
           // "postcss" loader applies autoprefixer to our CSS.

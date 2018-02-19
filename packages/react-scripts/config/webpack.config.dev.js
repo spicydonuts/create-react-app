@@ -163,18 +163,39 @@ module.exports = {
           // Process JS with Babel.
           {
             test: /\.(js|jsx|mjs)$/,
-            include: paths.appSrc,
+            include: [
+              paths.appSrc,
+              /lumi-components/,
+              /react-native-/
+            ],
             loader: require.resolve('babel-loader'),
             options: {
               // @remove-on-eject-begin
               babelrc: false,
               presets: [require.resolve('babel-preset-react-app')],
+              plugins: [require.resolve('babel-plugin-react-native-web')],
               // @remove-on-eject-end
               // This is a feature of `babel-loader` for webpack (not Babel itself).
               // It enables caching results in ./node_modules/.cache/babel-loader/
               // directory for faster rebuilds.
               cacheDirectory: true,
             },
+          },
+          // Process PureScript.
+          {
+            test: /\.purs$/,
+            include: paths.appSrc,
+            loader: require.resolve('purs-loader'),
+            options: {
+              src: [
+                'bower_components/purescript-*/src/**/*.purs',
+                'src/**/*.purs'
+              ],
+              bundle: false,
+              psc: 'psa',
+              watch: true,
+              pscIde: false
+            }
           },
           // "postcss" loader applies autoprefixer to our CSS.
           // "css" loader resolves paths in CSS and adds assets as dependencies.
